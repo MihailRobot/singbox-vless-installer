@@ -1,1 +1,1 @@
-# singbox-vless-installer
+Minimal VLESS Reality singbox installer
