@@ -13,6 +13,8 @@ echo "[*] Using port: $PORT"
 echo "[*] Opening TCP port $PORT in iptables..."
 iptables -I INPUT -p tcp --dport $PORT -j ACCEPT
 netfilter-persistent save
+systemctl enable netfilter-persistent
+systemctl start netfilter-persistent
 
 # 4. Download Sing-box
 echo "[*] Downloading Sing-box..."
