@@ -3,6 +3,12 @@ set -e
 
 apt install -y curl iptables-persistent
 
+# 1. Ask for SNI
+read -p "Enter SNI/hostname for Sing-box Reality VLESS [default www.bing.com]: " SNI
+SNI=${SNI:-www.bing.com}
+
+echo "[*] Using SNI: $SNI"
+
 # 2. Ask for port
 read -p "Enter port for Sing-box Reality VLESS [default 443]: " PORT
 PORT=${PORT:-443}
@@ -28,7 +34,6 @@ mv */sing-box /usr/local/bin/
 
 # Clean up
 rm -rf sb.tar.gz */   # remove the tarball and the extracted folder
-
 
 # 5. Generate UUID
 UUID=$(cat /proc/sys/kernel/random/uuid)
@@ -66,11 +71,11 @@ cat > $CONFIG_DIR/config.json <<EOF
       ],
       "tls": {
         "enabled": true,
-        "server_name": "www.bing.com",
+        "server_name": "$SNI",
         "reality": {
           "enabled": true,
           "handshake": {
-            "server": "www.bing.com",
+            "server": "$SNI",
             "server_port": 443
           },
           "private_key": "$PRIVATE_KEY",
@@ -113,4 +118,4 @@ echo ""
 echo "[*] Sing-box Reality VLESS server is running on port $PORT."
 echo "[*] Use this VLESS link in your client:"
 echo ""
-echo "vless://$UUID@$IP:$PORT?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.bing.com&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORT_ID&type=tcp#Reality"
+echo "vless://$UUID@$IP:$PORT?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$SNI&fp=chrome&pbk=$PUBLIC_KEY&sid=$SHORT_ID&type=tcp#Reality"
